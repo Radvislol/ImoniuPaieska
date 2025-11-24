@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El. laiškų siuntimas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #28a745;
+            --accent-color: #ffc107;
+            --text-color: #333;
+            --header-color: #2c3e50;
+            --bg-gradient-start: #ece9e6;
+            --bg-gradient-end: #ffffff;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow-light: 0 8px 20px rgba(0, 0, 0, 0.15);
+            --shadow-hover: 0 12px 25px rgba(0, 0, 0, 0.2);
+            --table-header-bg: #007bff;
+            --table-header-text: white;
+            --table-row-even: #f8f9fa;
+            --table-row-hover: #e9ecef;
+            --send-button-color: #007bff; 
+            --send-all-button-color: #28a745; /* Nauja spalva siųsti visiems mygtukui */
+            --nav-button-color: #6c757d; 
+            --danger-color: #dc3545;
+            --clear-button-color: #dc3545; /* Spalva "išvalyti konfigūraciją" mygtukui */
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(to right, var(--bg-gradient-start), var(--bg-gradient-end));
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        .container {
+            max-width: 95%;
+            width: 100%;
+            margin: 20px auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease-in-out;
+            box-sizing: border-box;
+        }
+        .container:hover {
+            box-shadow: var(--shadow-hover);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        header h1 {
+            color: var(--header-color);
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        header i {
+            color: var(--primary-color);
+            margin-right: 15px;
+            font-size: 1.5em;
+            vertical-align: middle;
+        }
+        .nav-button {
+            background-color: var(--nav-button-color);
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .nav-button:hover {
+            background-color: #5a6268;
+        }
+        h2 {
+            color: var(--header-color);
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: 400;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #fdfdfd;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: #555;
+        }
+        input[type="file"] {
+            margin-bottom: 15px;
+            display: block;
+        }
+        input[type="text"],
+        input[type="password"],
+        input[type="number"],
+        textarea {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 700;
+            width: 100%;
+            margin-top: 15px;
+            transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .send-all-button {
+            background-color: var(--send-all-button-color);
+            margin-top: 25px;
+        }
+        .send-all-button:hover {
+            background-color: #218838;
+        }
+        .clear-config-button { /* Naujas stilius išvalymo mygtukui */
+            background-color: var(--clear-button-color);
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 0.9em;
+        }
+        .clear-config-button:hover {
+            background-color: #c82333;
+        }
+        .results-section {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        .company-list {
+            list-style: none;
+            padding: 0;
+        }
+        .company-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            flex-wrap: wrap; /* Leisti elementams lūžti mažesniuose ekranuose */
+        }
+        .company-item:nth-child(even) {
+            background-color: var(--table-row-even);
+        }
+        .company-info {
+            flex-grow: 1;
+            min-width: 200px; /* Minimalus plotis informacijai */
+            margin-right: 10px; /* Tarpas tarp info ir mygtuko */
+        }
+        .company-info strong {
+            display: block;
+            font-size: 1.1em;
+            color: var(--header-color);
+            margin-bottom: 3px;
+        }
+        .company-info span {
+            font-size: 0.9em;
+            color: #666;
+            word-break: break-all; /* Leisti el. paštui lūžti, jei ilgas */
+        }
+        .send-email-btn {
+            background-color: var(--send-button-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            margin-left: 15px;
+            white-space: nowrap; 
+        }
+        .send-email-btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-1px);
+        }
+        .send-email-btn:active {
+            transform: translateY(0);
+        }
+        .send-email-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .status-message {
+            margin-top: 10px;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: none; /* Paslėpta pagal nutylėjimą */
+        }
+        .status-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status-message.info { /* Informacinio pranešimo stilius */
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        footer {
+            margin-top: 40px;
+            padding: 20px;
+            text-align: center;
+            color: #777;
+            font-size: 0.9em;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .loading-animation {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.1em;
+            color: var(--primary-color);
+            font-weight: bold;
+            display: none; 
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        .loading-animation .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary-color);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mobile responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+                margin: 10px auto;
+                max-width: 98%;
+            }
+            header h1 {
+                font-size: 1.5em;
+            }
+            header i {
+                font-size: 1.2em;
+                margin-right: 10px;
+            }
+            .nav-button {
+                position: static;
+                transform: none;
+                margin-top: 10px;
+                width: 100%;
+                text-align: center;
+            }
+            h2 {
+                font-size: 1.2em;
+            }
+            .company-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .send-email-btn {
+                margin-left: 0;
+                margin-top: 10px;
+                width: 100%;
+            }
+            input[type="text"],
+            input[type="password"],
+            input[type="number"],
+            textarea {
+                width: calc(100% - 20px); /* 10px padding kiekvienoje pusėje */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="/" class="nav-button"><i class="fas fa-arrow-left"></i> Grįžti į paiešką</a>
+            <h1><i class="fas fa-envelope-open-text"></i> El. laiškų siuntimas</h1>
+        </header>
+
+        <div class="form-section">
+            <h2><i class="fas fa-file-upload"></i> Importuoti įmones iš Excel</h2>
+            <label for="excel-file">Pasirinkite Excel failą (.xlsx):</label>
+            <input type="file" id="excel-file" accept=".xlsx">
+            <button id="import-excel-button"><i class="fas fa-file-import"></i> Importuoti</button>
+            <div id="import-loading" class="loading-animation"><span class="spinner"></span> Apdorojamas Excel failas...</div>
+        </div>
+
+        <div class="form-section">
+            <h2><i class="fas fa-cogs"></i> Konfigūracija</h2>
+            <label for="smtp-user">El. paštas:</label>
+            <input type="text" id="smtp-user" placeholder="jusuelpastas@example.com">
+
+            <label for="smtp-password">Programos slaptažodis (NE email slaptažodis):</label>
+            <input type="password" id="smtp-password" placeholder="Jūsų slaptažodis">
+            <p style="font-size: 0.85em; color: #777; margin-top: 5px;">
+                *Numatytieji nustatymai: SMTP serveris: `smtp.gmail.com`, Portas: `587` (TLS).<br>
+                *Youtube video kaip gauti <a href="https://www.youtube.com/watch?v=MkLX85XU5rU" target="_blank" rel="noopener noreferrer">Programos slaptažodį</a>.
+            </p>
+            <button id="clear-config-button" class="clear-config-button"><i class="fas fa-eraser"></i> Išvalyti konfigūraciją</button>
+        </div>
+
+        <div class="form-section">
+            <h2><i class="fas fa-sticky-note"></i> El. laiško šablonas</h2>
+            <label for="email-subject">Tema:</label>
+            <input type="text" id="email-subject" placeholder="Jūsų laiško tema">
+
+            <label for="email-template">El. laiško šablonas:</label>
+            <textarea id="email-template" rows="10" placeholder="Sveiki,&#10;&#10;Rašau dėl...&#10;&#10;Pagarbiai,&#10;[Jūsų vardas]"></textarea>
+            <button id="send-all-emails-button" class="send-all-button" disabled><i class="fas fa-paper-plane"></i> Siųsti visiems vienu metu</button>
+            <div id="global-send-loading" class="loading-animation"><span class="spinner"></span> Siunčiami el. laiškai... Prašome palaukti.</div>
+            <div id="global-send-status" class="status-message"></div>
+        </div>
+
+        <div class="results-section">
+            <h2><i class="fas fa-building"></i> Įkeltos įmonės (<span id="imported-companies-count">0</span>)</h2>
+            <ul class="company-list" id="company-list">
+                </ul>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script>
+        const excelFileInput = document.getElementById('excel-file');
+        const importExcelButton = document.getElementById('import-excel-button');
+        const importLoading = document.getElementById('import-loading');
+
+        const smtpUserInput = document.getElementById('smtp-user');
+        const smtpPasswordInput = document.getElementById('smtp-password');
+        const clearConfigButton = document.getElementById('clear-config-button');
+
+        const emailSubjectInput = document.getElementById('email-subject');
+        const emailTemplateTextarea = document.getElementById('email-template');
+        const sendAllEmailsButton = document.getElementById('send-all-emails-button');
+        const globalSendLoading = document.getElementById('global-send-loading');
+        const globalSendStatus = document.getElementById('global-send-status');
+
+        const companyList = document.getElementById('company-list');
+        const importedCompaniesCountSpan = document.getElementById('imported-companies-count');
+
+        let importedCompanies = []; 
+
+        function showStatusMessage(element, message, type) {
+            element.textContent = message;
+            element.className = `status-message ${type}`;
+            element.style.display = 'block';
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 5000); 
+        }
+
+        function checkSmtpConfigFilled() {
+            return smtpUserInput.value.trim() !== '' &&
+                   smtpPasswordInput.value.trim() !== '';
+        }
+
+        function updateSendAllButtonState() {
+            sendAllEmailsButton.disabled = importedCompanies.length === 0 || !checkSmtpConfigFilled() || emailSubjectInput.value.trim() === '' || emailTemplateTextarea.value.trim() === '';
+            document.querySelectorAll('.send-email-btn').forEach(btn => {
+                btn.disabled = !checkSmtpConfigFilled() || emailSubjectInput.value.trim() === '' || emailTemplateTextarea.value.trim() === '';
+                if (!btn.disabled && btn.textContent.includes('Klaida!')) {
+                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Siųsti';
+                    btn.style.backgroundColor = varCss('--send-button-color');
+                }
+            });
+        }
+
+        // Nauja funkcija: Įkelti visą konfigūraciją iš LocalStorage
+        function loadConfigFromLocalStorage() {
+            const savedUser = localStorage.getItem('smtpUser');
+            const savedPassword = localStorage.getItem('smtpPassword');
+            const savedSubject = localStorage.getItem('emailSubject'); // Nauja
+            const savedTemplate = localStorage.getItem('emailTemplate'); // Nauja
+
+            if (savedUser) {
+                smtpUserInput.value = savedUser;
+            }
+            if (savedPassword) {
+                smtpPasswordInput.value = savedPassword;
+            }
+            if (savedSubject) { // Nauja
+                emailSubjectInput.value = savedSubject;
+            }
+            if (savedTemplate) { // Nauja
+                emailTemplateTextarea.value = savedTemplate;
+            }
+            updateSendAllButtonState(); 
+        }
+
+        // Nauja funkcija: Išsaugoti visą konfigūraciją į LocalStorage
+        function saveConfigToLocalStorage() {
+            localStorage.setItem('smtpUser', smtpUserInput.value.trim());
+            localStorage.setItem('smtpPassword', smtpPasswordInput.value.trim());
+            localStorage.setItem('emailSubject', emailSubjectInput.value.trim()); // Nauja
+            localStorage.setItem('emailTemplate', emailTemplateTextarea.value.trim()); // Nauja
+            updateSendAllButtonState(); 
+        }
+
+        clearConfigButton.addEventListener('click', () => {
+            if (confirm('Ar tikrai norite išvalyti išsaugotą konfigūraciją (SMTP ir laiško šabloną)?')) {
+                localStorage.removeItem('smtpUser');
+                localStorage.removeItem('smtpPassword');
+                localStorage.removeItem('emailSubject'); // Nauja
+                localStorage.removeItem('emailTemplate'); // Nauja
+                smtpUserInput.value = '';
+                smtpPasswordInput.value = '';
+                emailSubjectInput.value = ''; // Nauja
+                emailTemplateTextarea.value = ''; // Nauja
+                updateSendAllButtonState();
+                showStatusMessage(globalSendStatus, 'Konfigūracija išvalyta.', 'info');
+            }
+        });
+
+        // Stebėti SMTP ir el. laiško laukų pakeitimus, kad būtų išsaugota konfigūracija
+        smtpUserInput.addEventListener('input', saveConfigToLocalStorage);
+        smtpPasswordInput.addEventListener('input', saveConfigToLocalStorage);
+        emailSubjectInput.addEventListener('input', saveConfigToLocalStorage); // Pakeista į saveConfigToLocalStorage
+        emailTemplateTextarea.addEventListener('input', saveConfigToLocalStorage); // Pakeista į saveConfigToLocalStorage
+
+
+        function renderCompanyList() {
+            companyList.innerHTML = ''; 
+            importedCompaniesCountSpan.textContent = importedCompanies.length;
+
+            if (importedCompanies.length === 0) {
+                companyList.innerHTML = '<p style="text-align: center; color: #777;">Nėra įkeltų įmonių.</p>';
+                return;
+            }
+
+            importedCompanies.forEach((company, index) => {
+                const li = document.createElement('li');
+                li.classList.add('company-item');
+                li.dataset.index = index; 
+
+                const companyInfoDiv = document.createElement('div');
+                companyInfoDiv.classList.add('company-info');
+                companyInfoDiv.innerHTML = `<strong>${company.name || 'Nenurodytas pavadinimas'}</strong><br><span>${company.email || 'Nenurodytas el. paštas'}</span>`;
+
+                const sendEmailBtn = document.createElement('button');
+                sendEmailBtn.classList.add('send-email-btn');
+                sendEmailBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Siųsti';
+                sendEmailBtn.disabled = !checkSmtpConfigFilled() || emailSubjectInput.value.trim() === '' || emailTemplateTextarea.value.trim() === ''; 
+                sendEmailBtn.addEventListener('click', () => sendEmail(company, sendEmailBtn)); 
+
+                li.appendChild(companyInfoDiv);
+                li.appendChild(sendEmailBtn);
+                companyList.appendChild(li);
+            });
+            updateSendAllButtonState(); 
+        }
+
+        importExcelButton.addEventListener('click', () => {
+            const file = excelFileInput.files[0];
+            if (!file) {
+                alert('Prašome pasirinkti Excel failą.');
+                return;
+            }
+
+            importLoading.style.display = 'block';
+            importExcelButton.disabled = true;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const json = XLSX.utils.sheet_to_json(worksheet);
+
+                    importedCompanies = json.map(row => ({
+                        name: row['name'] || row['Name'] || '', 
+                        email: row['email'] || row['Email'] || '' 
+                    })).filter(company => company.name && company.email); 
+
+                    renderCompanyList();
+                    showStatusMessage(globalSendStatus, `Sėkmingai importuota ${importedCompanies.length} įmonių.`, 'success');
+
+                } catch (error) {
+                    console.error('Klaida apdorojant Excel failą:', error);
+                    showStatusMessage(globalSendStatus, 'Klaida apdorojant Excel failą. Įsitikinkite, kad tai galiojantis .xlsx failas ir kad jame yra "name" (arba "Name") ir "email" (arba "Email") stulpeliai.', 'error');
+                } finally {
+                    importLoading.style.display = 'none';
+                    importExcelButton.disabled = false;
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        async function sendEmail(company, buttonElement) {
+            const smtpUser = smtpUserInput.value.trim();
+            const smtpPassword = smtpPasswordInput.value; 
+            const subject = emailSubjectInput.value.trim();
+            let body = emailTemplateTextarea.value;
+
+            if (!smtpUser || !smtpPassword || !subject || !body) {
+                alert('Prašome užpildyti visus SMTP konfigūracijos (El. paštas, Slaptažodis) ir el. laiško šablono laukus.');
+                return;
+            }
+
+            body = body.replace(/{company_name}/g, company.name)
+                       .replace(/{company_email}/g, company.email);
+
+            const emailData = {
+                smtp_user: smtpUser,
+                smtp_password: smtpPassword,
+                recipient_email: company.email,
+                subject: subject,
+                body: body
+            };
+
+            if (buttonElement) {
+                buttonElement.disabled = true;
+                buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Siunčiama...';
+                buttonElement.style.backgroundColor = varCss('--primary-color'); 
+            } else {
+                globalSendLoading.style.display = 'block';
+                sendAllEmailsButton.disabled = true;
+                sendAllEmailsButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Siunčiama visiems...';
+            }
+
+            try {
+                const response = await fetch('/send_email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(emailData)
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    if (buttonElement) {
+                        buttonElement.innerHTML = '<i class="fas fa-check"></i> Išsiųsta!';
+                        buttonElement.style.backgroundColor = varCss('--secondary-color'); 
+                        setTimeout(() => {
+                            buttonElement.innerHTML = '<i class="fas fa-paper-plane"></i> Siųsti';
+                            buttonElement.disabled = false;
+                            buttonElement.style.backgroundColor = varCss('--send-button-color'); 
+                        }, 3000); 
+                    } else {
+                        showStatusMessage(globalSendStatus, `El. laiškas sėkmingai išsiųstas įmonei "${company.name}"`, 'success');
+                    }
+                    return true; 
+                } else {
+                    const errorMessage = `Klaida siunčiant el. laišką įmonei "${company.name}": ${result.message}`;
+                    console.error(errorMessage);
+                    if (buttonElement) {
+                        buttonElement.innerHTML = '<i class="fas fa-times"></i> Klaida!';
+                        buttonElement.style.backgroundColor = varCss('--danger-color'); 
+                        setTimeout(() => {
+                            buttonElement.innerHTML = '<i class="fas fa-paper-plane"></i> Siųsti';
+                            buttonElement.disabled = false;
+                            buttonElement.style.backgroundColor = varCss('--send-button-color');
+                        }, 5000); 
+                    } else {
+                        showStatusMessage(globalSendStatus, errorMessage, 'error');
+                    }
+                    return false; 
+                }
+            } catch (error) {
+                const errorMessage = `Tinklo klaida siunčiant el. laišką įmonei "${company.name}": ${error.message}`;
+                console.error(errorMessage);
+                if (buttonElement) {
+                    buttonElement.innerHTML = '<i class="fas fa-times"></i> Tinklo Klaida!';
+                    buttonElement.style.backgroundColor = varCss('--danger-color');
+                    setTimeout(() => {
+                        buttonElement.innerHTML = '<i class="fas fa-paper-plane"></i> Siųsti';
+                        buttonElement.disabled = false;
+                        buttonElement.style.backgroundColor = varCss('--send-button-color');
+                    }, 5000); 
+                } else {
+                    showStatusMessage(globalSendStatus, errorMessage, 'error');
+                }
+                return false; 
+            } finally {
+                if (!buttonElement) { 
+                    globalSendLoading.style.display = 'none';
+                    sendAllEmailsButton.innerHTML = '<i class="fas fa-paper-plane"></i> Siųsti visiems importuotiems';
+                    updateSendAllButtonState(); 
+                }
+            }
+        }
+
+        function varCss(name) {
+            return getComputedStyle(document.documentElement).getPropertyValue(name);
+        }
+
+        sendAllEmailsButton.addEventListener('click', async () => {
+            if (importedCompanies.length === 0) {
+                showStatusMessage(globalSendStatus, 'Nėra importuotų įmonių siuntimui.', 'error');
+                return;
+            }
+
+            const confirmSend = confirm(`Ar tikrai norite siųsti el. laiškus į ${importedCompanies.length} adresus?`);
+            if (!confirmSend) {
+                return;
+            }
+
+            sendAllEmailsButton.disabled = true;
+            globalSendLoading.style.display = 'block';
+            globalSendStatus.style.display = 'none'; 
+
+            let successfulSends = 0;
+            let failedSends = 0;
+
+            for (let i = 0; i < importedCompanies.length; i++) {
+                const company = importedCompanies[i];
+                const companyItem = document.querySelector(`.company-item[data-index="${i}"]`);
+                const buttonElement = companyItem ? companyItem.querySelector('.send-email-btn') : null;
+
+                if (buttonElement) {
+                     buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; 
+                     buttonElement.disabled = true;
+                     buttonElement.style.backgroundColor = varCss('--primary-color'); 
+                }
+                
+                showStatusMessage(globalSendStatus, `Siunčiama ${i + 1} iš ${importedCompanies.length}...`, 'info'); 
+
+                const success = await sendEmail(company, buttonElement); 
+                if (success) {
+                    successfulSends++;
+                } else {
+                    failedSends++;
+                }
+
+                await new Promise(resolve => setTimeout(resolve, 1000)); 
+            }
+
+            globalSendLoading.style.display = 'none';
+            sendAllEmailsButton.disabled = false;
+            sendAllEmailsButton.innerHTML = '<i class="fas fa-paper-plane"></i> Siųsti visiems importuotiems';
+
+            if (failedSends === 0) {
+                showStatusMessage(globalSendStatus, `Sėkmingai išsiųsta ${successfulSends} el. laiškų.`, 'success');
+            } else {
+                showStatusMessage(globalSendStatus, `Siuntimas baigtas. ${successfulSends} sėkmingų, ${failedSends} klaidų.`, 'error');
+            }
+            renderCompanyList(); 
+        });
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentYearSpan = document.getElementById('current-year');
+            if (currentYearSpan) {
+                currentYearSpan.textContent = new Date().getFullYear();
+            }
+            loadConfigFromLocalStorage(); // Įkelti visą konfigūraciją, kai puslapis įkeliamas
+            renderCompanyList(); 
+            updateSendAllButtonState(); 
+        });
+    </script>
+</body>
+</html>
